@@ -2,7 +2,6 @@ package ru.job4j.pooh;
 
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,10 +20,9 @@ public class PoohServer {
         try (ServerSocket server = new ServerSocket(9000)) {
             System.out.println("Pooh is ready ...");
             while (!server.isClosed()) {
-                Socket socket = server.accept();
                 pool.execute(() -> {
-                    try (OutputStream out = socket.getOutputStream();
-                         var input = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                    try (OutputStream out = server.accept().getOutputStream();
+                         var input = new BufferedReader(new InputStreamReader(server.accept().getInputStream()))) {
                         while (true) {
                             var details = input.readLine().split(";");
                             if (details.length != 3) {
